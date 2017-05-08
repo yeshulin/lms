@@ -1,0 +1,162 @@
+package admin
+
+import (
+	"html/template"
+	//"net/http"
+	//"crypto/aes"
+	"encoding/base64"
+	"fmt"
+	"strconv"
+	"time"
+	"webproject/lms/common/aesencrypt"
+	"webproject/lms/common/hjwt"
+	"webproject/lms/controllers"
+	"webproject/lms/models"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
+	jwt "github.com/dgrijalva/jwt-go"
+)
+
+type UserController struct {
+	controllers.WebController
+}
+
+func (this *UserController) Login() {
+	token := hjwt.GenToken()
+
+	this.Ctx.SetCookie("Authorization", token, 3600, "/")
+	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
+	this.TplName = "admin/login.html"
+}
+
+func (this *UserController) Post() {
+	aesencrypt := new(aesencrypt.AesEncrypt)
+	username := this.GetString("account")
+
+	o := orm.NewOrm()
+	member := models.Members{Username: username}
+	err := o.Read(&member)
+	if err != nil {
+		beego.Error(err)
+	}
+	if pass, _ := aesencrypt.Encrypt(this.GetString("password")); base64.StdEncoding.EncodeToString(pass) != member.Password {
+		beego.Error(err)
+	}
+
+	now := time.Now()
+	exp := now.Add(time.Hour * 24).Unix()
+
+	iat := now.Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub":      member.Id,
+		"iat":      iat,
+		"exp":      exp,
+		"username": member.Username,
+		"email":    member.Email,
+		"phone":    member.Phone,
+		"realname": member.Realname,
+	})
+
+	tokenString, _ := token.SignedString([]byte(beego.AppConfig.String("jwtkey")))
+	//更新登录时间，用于只允许用户一台设备登录
+	/*this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "tokenString": tokenString}
+	this.ServeJSON()*/
+	fmt.Println(tokenString)
+	this.Ctx.Redirect(302, "/admin")
+
+}
+func (this *UserController) Reg() {
+	aesencrypt := new(aesencrypt.AesEncrypt)
+	password, err := aesencrypt.Encrypt(this.GetString("password"))
+	if err != nil {
+		beego.Error(err)
+	}
+	o := orm.NewOrm()
+	member := new(models.Members)
+	//fmt.Println(password)
+	member.Username = this.GetString("username")
+	member.Password = base64.StdEncoding.EncodeToString(password)
+	member.Realname = this.GetString("realname")
+	member.Email = this.GetString("email")
+	member.Phone = this.GetString("phone")
+	member.Addtime = time.Now().Unix()
+	member.Updatetime = time.Now().Unix()
+	id, err := o.Insert(member)
+	if err != nil {
+		beego.Error(err)
+	}
+	this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "data": id}
+	this.ServeJSON()
+}
+
+func (this *UserController) Register() {
+	this.TplName = "admin/register.html"
+}
+
+func (this *UserController) UserList() {
+	this.TplName = "admin/userlist.html"
+}
+
+type Counts struct {
+	total int `总量`
+}
+
+func (this *UserController) Get() {
+	id := this.GetString("id")
+	limit := "10"
+	start := this.GetString("start")
+	page := this.GetString("page")
+	sort := this.GetString("sortColumn")
+	search := this.GetString("search")
+	ilimit, _ := strconv.Atoi(limit)
+	istart, _ := strconv.Atoi(start)
+	where := "1=1"
+	o := orm.NewOrm()
+	var maps []models.Members
+	fmt.Println(id)
+	if id != "" {
+		where = where + " and id = " + id
+	}
+	if search != "" {
+		where = where + " and (username like '%" + search + "%' or realname like '%" + search + "%' or phone like '%" + search + "%' or email like '%" + search + "%')"
+	}
+	qb, _ := orm.NewQueryBuilder("mysql")
+
+	// 构建查询对象
+	qb.Select("id,username,realname,email,phone,addtime,updatetime").
+		From("members").
+		Where(where).
+		OrderBy(sort).Desc().
+		Limit(ilimit).Offset(istart)
+
+	// 导出 SQL 语句
+	sql := qb.String()
+	num, _ := o.Raw(sql).QueryRows(&maps)
+	fmt.Println(num)
+	/*查询总量*/
+	qbs, _ := orm.NewQueryBuilder("mysql")
+	var counts []models.Members
+	qbs.Select("id,username,realname,email,phone,addtime,updatetime").
+		From("members").
+		Where(where).
+		OrderBy(sort).Desc()
+	sqls := qbs.String()
+	nums, _ := o.Raw(sqls).QueryRows(&counts)
+	fmt.Println(nums)
+	//fmt.Println(counts)
+	//fmt.Println(maps)
+	data := map[string]interface{}{"data": maps, "limit": limit, "page": page, "total": nums}
+	//data["data"] = maps
+	//json.data = maps
+	//json.limit = limit
+	//json.page = page
+	//json.total = nums
+
+	fmt.Println(limit)
+	fmt.Println(page)
+	fmt.Println(data)
+	this.Data["json"] = data
+	this.ServeJSON()
+
+}
