@@ -88,7 +88,7 @@
                   pagingType: "full_numbers",  //分页样式：simple,simple_numbers,full,full_numbers
                   "columnDefs": [ {
                       "targets": 7,
-                      "defaultContent": ' <button class="layui-btn layui-btn-small" id="view">查看</button><button class="layui-btn layui-btn-small layui-btn-normal edit">编辑</button><button class="layui-btn layui-btn-small layui-btn-danger delete">删除</button>'
+                      "defaultContent": ' <button class="layui-btn layui-btn-small view">查看</button><button class="layui-btn layui-btn-small layui-btn-normal edit">编辑</button><button class="layui-btn layui-btn-small layui-btn-danger delete">删除</button>'
                   } ],
                   ajax: function (data, callback, settings) {
 				
@@ -187,10 +187,11 @@
             }
         });
 		
-         $('#dateTable').on( 'click','.delete',function () {
+         $('#dateTable tbody').on( 'click','.delete',function () {
 
             var data = dataTable.row( $(this).parents('tr') ).data();
-            layer.confirm('你确定要删除id：'+ data['id'] +' 吗', {
+			//console.log(data);
+            layer.confirm('你确定要删除id：'+ data.Id +' 吗', {
                 time: 0 //不自动关闭
                 ,btn: ['确认', '取消']
                 ,yes: function(index){
@@ -201,9 +202,24 @@
                         btn: ['确认'],
                         time: 1000
                     });
-                    window.location = "/admin/user/delete?" + 'id='+data['id'];
+					$.post("/admin/user/delete",{id:data.Id},function(data){
+						if(data.code==1){
+							window.location = "/admin/userlist";
+						}else{
+							layer.msg('删除信息失败！');
+						}
+					},"json")
+                    
                 }
             });
+        } );
+		$('#dateTable tbody').on( 'click','.view',function () {
+            var data = dataTable.row( $(this).parents('tr') ).data();
+			window.location="/admin/user/view?id="+data.Id;
+        } );
+		$('#dateTable tbody').on( 'click','.edit',function () {
+            var data = dataTable.row( $(this).parents('tr') ).data();
+			window.location="/admin/user/edit?id="+data.Id;
         } );
 
 

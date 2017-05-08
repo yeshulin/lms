@@ -162,7 +162,7 @@ func (this *UserController) Get() {
 }
 
 func (this *UserController) Add() {
-	this.TplName = "admin/add_user.html"
+	this.TplName = "admin/user_add.html"
 }
 
 func (this *UserController) AddPost() {
@@ -188,4 +188,33 @@ func (this *UserController) AddPost() {
 	}
 	this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "data": id}
 	this.ServeJSON()
+}
+
+func (this *UserController) Delete() {
+	id, _ := strconv.Atoi(this.GetString("id"))
+	o := orm.NewOrm()
+	member := new(models.Members)
+	member.Id = id
+	if num, err := o.Delete(member); err == nil {
+		this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "data": num}
+	} else {
+		this.Data["json"] = map[string]interface{}{"code": "0", "message": "fail!"}
+	}
+	this.ServeJSON()
+}
+
+func (this *UserController) View() {
+	id, _ := strconv.Atoi(this.GetString("id"))
+	o := orm.NewOrm()
+	member := new(models.Members)
+	member.Id = id
+	err := o.Read(member)
+
+	if err == orm.ErrNoRows {
+		fmt.Println("查询不到")
+	} else if err == orm.ErrMissPK {
+		fmt.Println("找不到主键")
+	}
+	this.Data["member"] = member
+	this.TplName = "admin/user_view.html"
 }
