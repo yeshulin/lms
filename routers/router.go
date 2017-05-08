@@ -16,6 +16,8 @@ func init() {
 	beego.Router("/admin", &admin.IndexController{})
 	beego.Router("/admin/user/find", &admin.UserController{}, "get:Get")
 	beego.Router("/admin/userlist", &admin.UserController{}, "get:UserList")
+	beego.Router("/admin/user/add", &admin.UserController{}, "get:Add;post:Add")
+	beego.Router("/admin/user/addpost", &admin.UserController{}, "post:AddPost")
 	beego.Router("/admin/role", &admin.RoleController{})
 	beego.Router("/admin/menu", &admin.MenuController{})
 	beego.Router("/admin/news", &admin.NewsController{})

@@ -18,7 +18,7 @@ func GenToken() string {
 	fmt.Println(key)
 	claims := &jwt.StandardClaims{
 		NotBefore: int64(time.Now().Unix()),
-		ExpiresAt: int64(time.Now().Unix() + 1000),
+		ExpiresAt: int64(time.Now().Unix() + 14400),
 		Issuer:    "hzwy23",
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

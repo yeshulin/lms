@@ -25,7 +25,7 @@
 <div class="my-btn-box">
     <span class="fl">
         <a class="layui-btn layui-btn-danger radius btn-delect" id="btn-delete-all">批量删除</a>
-        <a class="layui-btn btn-add btn-default" id="btn-add-article">发布文章</a>
+        <a class="layui-btn btn-add btn-default" id="btn-add-article" href="/admin/user/add">添加</a>
     </span>
   
 </div>
@@ -38,8 +38,8 @@
         <th>真实姓名</th>
         <th>邮箱</th>
         <th>电话</th>
-        <th>注册时间</th>
-		<th>注册时间</th>
+        <th data-formatter=timestrap2date>注册时间</th>
+		<th data-formatter=timestrap2date>注册时间</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -74,7 +74,7 @@
             }
         });
 		*/
-		$('#dateTable').DataTable( {
+		var dataTable = $('#dateTable').DataTable( {
                   autoWidth: false,  //禁用自动调整列宽
                   stripeClasses: ["odd", "even"],  //为奇偶行加上样式，兼容不支持CSS伪类的场合
                   processing: true,  //隐藏加载提示,自行处理
@@ -88,7 +88,7 @@
                   pagingType: "full_numbers",  //分页样式：simple,simple_numbers,full,full_numbers
                   "columnDefs": [ {
                       "targets": 7,
-                      "defaultContent": ' <button class="layui-btn layui-btn-small">查看</button><button class="layui-btn layui-btn-small layui-btn-normal">编辑</button><button class="layui-btn layui-btn-small layui-btn-danger">删除</button>'
+                      "defaultContent": ' <button class="layui-btn layui-btn-small" id="view">查看</button><button class="layui-btn layui-btn-small layui-btn-normal edit">编辑</button><button class="layui-btn layui-btn-small layui-btn-danger delete">删除</button>'
                   } ],
                   ajax: function (data, callback, settings) {
 				
@@ -186,11 +186,37 @@
                 layer.msg(list);
             }
         });
+		
+         $('#dateTable').on( 'click','.delete',function () {
 
-        // you code ...
+            var data = dataTable.row( $(this).parents('tr') ).data();
+            layer.confirm('你确定要删除id：'+ data['id'] +' 吗', {
+                time: 0 //不自动关闭
+                ,btn: ['确认', '取消']
+                ,yes: function(index){
+                    layer.close(index);
+                    layer.msg('正在删除', {
+                        icon: 16,
+                        btnAlign: 'c',
+                        btn: ['确认'],
+                        time: 1000
+                    });
+                    window.location = "/admin/user/delete?" + 'id='+data['id'];
+                }
+            });
+        } );
 
 
     });
+	 //时间戳转换日期格式
+    function timestrap2date(value) {
+        if(value!=null ){
+            var now = new Date(parseInt(value) * 1000);
+            //return now.pattern("yyyy-MM-dd HH:mm:ss");
+        }else{
+            return '-';
+        }
+    }
 </script>
 </body>
 </html>

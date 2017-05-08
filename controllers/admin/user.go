@@ -25,7 +25,7 @@ type UserController struct {
 func (this *UserController) Login() {
 	token := hjwt.GenToken()
 
-	this.Ctx.SetCookie("Authorization", token, 3600, "/")
+	this.Ctx.SetCookie("Authorization", token, 14400, "/")
 	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
 	this.TplName = "admin/login.html"
 }
@@ -159,4 +159,33 @@ func (this *UserController) Get() {
 	this.Data["json"] = data
 	this.ServeJSON()
 
+}
+
+func (this *UserController) Add() {
+	this.TplName = "admin/add_user.html"
+}
+
+func (this *UserController) AddPost() {
+	fmt.Println(this.GetString("username"))
+	aesencrypt := new(aesencrypt.AesEncrypt)
+	password, err := aesencrypt.Encrypt(this.GetString("password"))
+	if err != nil {
+		beego.Error(err)
+	}
+	o := orm.NewOrm()
+	member := new(models.Members)
+	//fmt.Println(password)
+	member.Username = this.GetString("username")
+	member.Password = base64.StdEncoding.EncodeToString(password)
+	member.Realname = this.GetString("realname")
+	member.Email = this.GetString("email")
+	member.Phone = this.GetString("phone")
+	member.Addtime = time.Now().Unix()
+	member.Updatetime = time.Now().Unix()
+	id, err := o.Insert(member)
+	if err != nil {
+		beego.Error(err)
+	}
+	this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "data": id}
+	this.ServeJSON()
 }
