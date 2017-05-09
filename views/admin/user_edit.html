@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>表单</title>
+    <link rel="stylesheet" href="/static/vipadmin/frame/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/vipadmin/css/style.css">
+    <link rel="icon" href="/static/vipadmin/image/code.png">
+</head>
+<body class="body">
+
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>
+        <span class="layui-breadcrumb">
+            <a href="/admin">首页</a>
+            <a><cite>编辑用户</cite></a>
+        </span>
+    </legend>
+</fieldset>
+
+<form class="layui-form" id="user-form">
+	<input type="hidden" name="id" value="{{.member.Id}}">
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-block">
+            <input type="text" name="username" lay-verify="required" placeholder="请输入用户名" autocomplete="off" value="{{.member.Username}}" class="layui-input">
+        </div>
+    </div>
+	<div class="layui-form-item">
+        <label class="layui-form-label">真实姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="realname" lay-verify="required" placeholder="请输入姓名" autocomplete="off" value="{{.member.Realname}}"  class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">验证手机</label>
+        <div class="layui-input-block">
+            <input type="text" name="phone" lay-verify="phone" placeholder="请输入手机" autocomplete="off" value="{{.member.Phone}}"  class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">验证邮箱</label>
+        <div class="layui-input-block">
+            <input type="text" name="email" lay-verify="email" placeholder="请输入邮箱" autocomplete="off" value="{{.member.Email}}"  class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码：</label>
+        <div class="layui-input-inline">
+            <input type="password" name="password" placeholder="默认为空不修改" autocomplete="off"   class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" name="submit" value="提交" lay-filter="demo1">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script src="/static/vipadmin/js/jquery.js" charset="utf-8"></script>
+<script src="/static/vipadmin/frame/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+    layui.use(['element','form'], function(){
+        var form = layui.form()
+                ,layer = layui.layer
+
+
+
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            });
+			//console.log(data.field);
+			//return false;
+			$.post("/admin/user/editpost",data.field,function(data){
+				console.log(data);
+				if(data.code==1){
+					 layer.msg('提交成功，正在为您跳转', {
+		                icon: 16
+		                ,shade: 0.01
+		            });
+					window.location="/admin/userlist";
+				}else{
+					layer.msg('修改失败，请检查你的信息！');
+				}
+			},"json")
+			
+        });
+
+
+    });
+</script>
+</body>
+</html>

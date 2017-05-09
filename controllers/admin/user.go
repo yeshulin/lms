@@ -218,3 +218,62 @@ func (this *UserController) View() {
 	this.Data["member"] = member
 	this.TplName = "admin/user_view.html"
 }
+
+func (this *UserController) Edit() {
+	id, _ := strconv.Atoi(this.GetString("id"))
+	o := orm.NewOrm()
+	member := new(models.Members)
+	member.Id = id
+	err := o.Read(member)
+
+	if err == orm.ErrNoRows {
+		fmt.Println("查询不到")
+	} else if err == orm.ErrMissPK {
+		fmt.Println("找不到主键")
+	}
+	this.Data["member"] = member
+	this.TplName = "admin/user_edit.html"
+}
+
+func (this *UserController) EditPost() {
+	fmt.Println(this.GetString("username"))
+
+	o := orm.NewOrm()
+	member := new(models.Members)
+
+	//fmt.Println(password)
+	id, err := strconv.Atoi(this.GetString("id"))
+	fmt.Println(id)
+
+	if err == nil {
+		member.Id = id
+		fmt.Println(id)
+		//fmt.Println(o.Read(&member))
+		if o.Read(member) == nil {
+			member.Username = this.GetString("username")
+			password := this.GetString("password")
+			if password != "" {
+				aesencrypt := new(aesencrypt.AesEncrypt)
+				passwords, err := aesencrypt.Encrypt(password)
+				if err != nil {
+					beego.Error(err)
+				}
+				member.Password = base64.StdEncoding.EncodeToString(passwords)
+			}
+			member.Realname = this.GetString("realname")
+			member.Email = this.GetString("email")
+			member.Phone = this.GetString("phone")
+			member.Addtime = time.Now().Unix()
+			member.Updatetime = time.Now().Unix()
+			id, err := o.Update(member)
+			if err != nil {
+				beego.Error(err)
+			}
+			this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "data": id}
+
+		} else {
+			this.Data["json"] = map[string]interface{}{"code": "0", "message": "fail!"}
+		}
+	}
+	this.ServeJSON()
+}
