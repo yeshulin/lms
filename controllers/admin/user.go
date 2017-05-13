@@ -162,6 +162,17 @@ func (this *UserController) Get() {
 }
 
 func (this *UserController) Add() {
+	/*用户角色*/
+	o := orm.NewOrm()
+	qbs, _ := orm.NewQueryBuilder("mysql")
+	var roles []models.Role
+	qbs.Select("id,name,status,remark,addtime,updatetime").
+		From("role").
+		OrderBy("id").Asc()
+	sqls := qbs.String()
+	nums, _ := o.Raw(sqls).QueryRows(&roles)
+	fmt.Println(nums)
+	this.Data["roles"] = roles
 	this.TplName = "admin/user_add.html"
 }
 
@@ -186,8 +197,24 @@ func (this *UserController) AddPost() {
 	if err != nil {
 		beego.Error(err)
 	}
+	role_ids, _ := strconv.Atoi(this.GetString("role_id"))
+	fmt.Println(role_ids)
+	res, err := o.Raw("delete from role_member where user_id = ? and role_id in(?)", id, role_ids).Exec()
+	if err == nil {
+		num, _ := res.RowsAffected()
+		fmt.Println("mysql row affected nums: ", num)
+	}
+	rolemember := new(models.RoleMember)
+	rolemember.User_id = int(id)
+	rolemember.Role_id = role_ids
+	rid, err1 := o.Insert(rolemember)
+	if err1 != nil {
+		beego.Error(err1)
+	}
+	fmt.Println(rid)
 	this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "data": id}
 	this.ServeJSON()
+
 }
 
 func (this *UserController) Delete() {

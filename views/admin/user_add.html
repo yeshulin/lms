@@ -54,6 +54,24 @@
         </div>
         <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
     </div>
+	  <div class="layui-form-item">
+        <label class="layui-form-label">用户角色</label>
+        <div class="layui-input-inline">
+            <select name="role_id" lay-filter="role_id">
+				{{range $key,$value:=.roles}}
+                <option value="{{$value.Id}}">{{$value.Name}}</option>
+				{{end}}
+            </select>
+        </div>
+    </div>
+	<!--div class="layui-form-item">
+        <label class="layui-form-label">用户角色</label>
+        <div class="layui-input-block">
+			{{range $key,$value:=.roles}}
+            <input type="checkbox" name="role_id[{{$value.Id}}]" value={{$value.Id}} title="{{$value.Name}}">
+			{{end}}
+        </div>
+    </div-->
 
     <div class="layui-form-item">
         <div class="layui-input-block">
@@ -85,6 +103,7 @@
             layer.alert(JSON.stringify(data.field), {
                 title: '最终的提交信息'
             });
+				
 			$.post("/admin/user/addpost",data.field,function(data){
 				console.log(data.code);
 				if(data.code==1){

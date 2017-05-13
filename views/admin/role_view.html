@@ -31,30 +31,26 @@
     </colgroup>
     <thead>
     <tr>
-        <th>用户名</th>
-        <th>{{.member.Username}}</th>
+        <th>名称</th>
+        <th>{{.role.Name}}</th>
     </tr>
     </thead>
     <tbody>
+	<tr>
+        <td>状态</td>
+        <td>{{.role.Status}}</td>
+    </tr>
     <tr>
-        <td>姓名</td>
-        <td>{{.member.Realname}}</td>
+        <td>备注</td>
+        <td>{{.role.Remark}}</td>
     </tr>
 	 <tr>
-        <td>电话</td>
-        <td>{{.member.Phone}}</td>
+        <td>添加时间</td>
+        <td>{{.role.Addtime | ConvertT}}</td>
     </tr>
 	 <tr>
-        <td>邮箱</td>
-        <td>{{.member.Email}}</td>
-    </tr>
-	 <tr>
-        <td>注册时间</td>
-        <td>{{.member.Addtime}}</td>
-    </tr>
-	 <tr>
-        <td>登录时间</td>
-        <td>{{.member.Updatetime}}</td>
+        <td>修改时间</td>
+        <td>{{.role.Updatetime | ConvertT}}</td>
     </tr>
     
     </tbody>

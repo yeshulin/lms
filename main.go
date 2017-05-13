@@ -1,6 +1,7 @@
 package main
 
 import (
+	"webproject/lms/common/function"
 	"webproject/lms/common/hjwt"
 	_ "webproject/lms/initial"
 
@@ -21,5 +22,6 @@ func main() {
 			http.Redirect(ctx.ResponseWriter, ctx.Request, "/login", http.StatusMovedPermanently)
 		}
 	})
+	beego.AddFuncMap("ConvertT", function.ConvertT)
 	beego.Run()
 }
