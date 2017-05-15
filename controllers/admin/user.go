@@ -207,11 +207,13 @@ func (this *UserController) AddPost() {
 	rolemember := new(models.RoleMember)
 	rolemember.User_id = int(id)
 	rolemember.Role_id = role_ids
-	rid, err1 := o.Insert(rolemember)
+	_, err1 := o.Insert(rolemember)
 	if err1 != nil {
 		beego.Error(err1)
 	}
-	fmt.Println(rid)
+	/*defer func() {
+		this.Redirect("/login", 302)
+	}()*/
 	this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "data": id}
 	this.ServeJSON()
 

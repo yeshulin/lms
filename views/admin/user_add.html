@@ -100,10 +100,10 @@
 
         //监听提交
         form.on('submit(demo1)', function(data){
-            layer.alert(JSON.stringify(data.field), {
+           /* layer.alert(JSON.stringify(data.field), {
                 title: '最终的提交信息'
             });
-				
+			*/	
 			$.post("/admin/user/addpost",data.field,function(data){
 				console.log(data.code);
 				if(data.code==1){
@@ -114,7 +114,7 @@
 					window.location="/admin/userlist";
 				}
 			},"json")
-			
+			return false;
         });
 
 
