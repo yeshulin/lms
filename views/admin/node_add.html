@@ -56,41 +56,14 @@
         <label class="layui-form-label">父节点</label>
         <div class="layui-input-inline">
             <select name="role_id" lay-filter="role_id">
+				<option value="0">根节点</option>
 				{{range $key,$value:=.nodes}}
-                <option value="{{$value.Id}}">{{$value.title}}</option>
+                <option value="{{$value.Id}}">    ├ {{$value.Title}}</option>
 				{{end}}
             </select>
         </div>
     </div>
-	<div class="layui-form-item">
-    <label class="layui-form-label">选择节点</label>
-    <div class="layui-input-inline">
-      <select name="quiz1">
-        <option value="">选择根节点</option>
-		{{range $key,$value:=.nodes}}
-              <option value="{{$value.Id}}">{{$value.title}}</option>
-		{{end}}
-      </select><div class="layui-unselect layui-form-select"><div class="layui-select-title"><input type="text" placeholder="请选择省" value="浙江省" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i></div><dl class="layui-anim layui-anim-upbit"><dd lay-value="浙江" class="layui-this">浙江省</dd><dd lay-value="你的工号" class="">江西省</dd><dd lay-value="你最喜欢的老师" class="">福建省</dd></dl></div>
-    </div>
-    <div class="layui-input-inline">
-      <select name="quiz2">
-        <option value="">请选择市</option>
-        <option value="杭州">杭州</option>
-        <option value="宁波" disabled="">宁波</option>
-        <option value="温州">温州</option>
-        <option value="温州">台州</option>
-        <option value="温州">绍兴</option>
-      </select><div class="layui-unselect layui-form-select"><div class="layui-select-title"><input type="text" placeholder="请选择市" value="" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i></div><dl class="layui-anim layui-anim-upbit"><dd lay-value="杭州" class="">杭州</dd><dd lay-value="宁波" class="layui-disabled">宁波</dd><dd lay-value="温州" class="layui-this">温州</dd><dd lay-value="温州" class="">台州</dd><dd lay-value="温州" class="">绍兴</dd></dl></div>
-    </div>
-    <div class="layui-input-inline">
-      <select name="quiz3">
-        <option value="">请选择县/区</option>
-        <option value="西湖区">西湖区</option>
-        <option value="余杭区">余杭区</option>
-        <option value="拱墅区">临安市</option>
-      </select><div class="layui-unselect layui-form-select"><div class="layui-select-title"><input type="text" placeholder="请选择县/区" value="" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i></div><dl class="layui-anim layui-anim-upbit"><dd lay-value="西湖区" class="">西湖区</dd><dd lay-value="余杭区" class="layui-this">余杭区</dd><dd lay-value="拱墅区" class="">临安市</dd></dl></div>
-    </div>
-  </div>
+	
 	<div class="layui-form-item">
         <label class="layui-form-label">节点类型</label>
         <div class="layui-input-block">

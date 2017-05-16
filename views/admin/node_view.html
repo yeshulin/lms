@@ -17,7 +17,7 @@
     <legend>
         <span class="layui-breadcrumb">
             <a href="/admin">首页</a>
-            <a><cite>添加用户</cite></a>
+            <a><cite>浏览节点</cite></a>
         </span>
     </legend>
 </fieldset>
@@ -32,26 +32,35 @@
     <thead>
     <tr>
         <th>名称</th>
-        <th>{{.role.Name}}</th>
+        <th>{{.node.Title}}</th>
     </tr>
     </thead>
     <tbody>
 	<tr>
+        <td>APPNAME</td>
+        <td>{{.node.Status}}</td>
+    </tr>
+	<tr>
         <td>状态</td>
-        <td>{{.role.Status}}</td>
+        <td>{{.node.Status}}</td>
     </tr>
-    <tr>
+	   <tr>
         <td>备注</td>
-        <td>{{.role.Remark}}</td>
+        <td>{{.node.Remark}}</td>
     </tr>
-	 <tr>
-        <td>添加时间</td>
-        <td>{{.role.Addtime | ConvertT}}</td>
+	<tr>
+        <td>排序</td>
+        <td>{{.node.Sort}}</td>
     </tr>
-	 <tr>
-        <td>修改时间</td>
-        <td>{{.role.Updatetime | ConvertT}}</td>
+	<tr>
+        <td>父节点</td>
+        <td>{{.node.Pid}}</td>
     </tr>
+	<tr>
+        <td>类型</td>
+        <td>{{.node.Type}}</td>
+    </tr>
+ 
     
     </tbody>
 </table>

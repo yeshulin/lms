@@ -33,8 +33,8 @@
      <div class="layui-form-item">
         <label class="layui-form-label">状态</label>
         <div class="layui-input-block">
-            <input type="checkbox" name="status" checked value="1" lay-skin="switch" title="状态">
-        </div>
+           <input type="checkbox" name="status" {{if eq .node.Status 1}}checked{{end}}  value="1" lay-skin="switch" title="状态">
+             </div>
     </div>
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">备注</label>

@@ -34,10 +34,12 @@
     <thead>
     <tr>
         <th><input type="checkbox" class="my-checkbox" /></th>
-        <th>角色名</th>
+		<th>排序</th>
+		<th>父ID</th>
+		<th>AppName</th>
+        <th>节点名</th>
         <th>状态</th>
-        <th data-formatter=timestrap2date>注册时间</th>
-		<th data-formatter=timestrap2date>更新时间</th>
+		<th>类型</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -85,7 +87,7 @@
                   renderer: "bootstrap",  //渲染样式：Bootstrap和jquery-ui
                   pagingType: "full_numbers",  //分页样式：simple,simple_numbers,full,full_numbers
                   "columnDefs": [ {
-                      "targets": 5,
+                      "targets": 7,
                       "defaultContent": ' <button class="layui-btn layui-btn-small view">查看</button><button class="layui-btn layui-btn-small layui-btn-normal edit">编辑</button><button class="layui-btn layui-btn-small layui-btn-danger delete">删除</button>'
                   } ],
                   ajax: function (data, callback, settings) {
@@ -131,10 +133,12 @@
                   //列表表头字段
                   columns: [
 	                { data: 'Id' },
+					{ data: 'Sort' },
+					{ data: 'Pid' },
 			        { data: 'Name' },
+			        { data: 'Title' },
 			        { data: 'Status' },
-			        { data: 'Addtime' },
-			        { data: 'Updatetime' }
+			        { data: 'Type' }
                   ],
                   "language": {
                       "processing": "加载中...",

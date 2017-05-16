@@ -177,3 +177,17 @@ func (this *RoleController) Delete() {
 	}
 	this.ServeJSON()
 }
+func (this *RoleController) User() {
+	id, _ := strconv.Atoi(this.GetString("id"))
+	o := orm.NewOrm()
+	role := new(models.Role)
+	role.Id = id
+	err := o.Read(role)
+	if err == orm.ErrNoRows {
+		fmt.Println("查询不到")
+	} else if err == orm.ErrMissPK {
+		fmt.Println("找不到主键")
+	}
+	this.Data["role"] = role
+	this.TplName = "admin/role_user.html"
+}

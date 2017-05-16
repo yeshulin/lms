@@ -16,30 +16,65 @@
     <legend>
         <span class="layui-breadcrumb">
             <a href="/admin">首页</a>
-            <a><cite>编辑角色</cite></a>
+            <a><cite>编辑节点</cite></a>
         </span>
     </legend>
 </fieldset>
 
 <form class="layui-form" id="user-form" >
-	<input type="hidden" name="id" value="{{.role.Id}}">
-    <div class="layui-form-item">
-        <label class="layui-form-label">角色名</label>
+	<input type="hidden" name="id" value="{{.node.Id}}">
+   <div class="layui-form-item">
+        <label class="layui-form-label">节点名</label>
         <div class="layui-input-block">
-            <input type="text" name="name" lay-verify="required" placeholder="请输入角色名" value="{{.role.Name}}" autocomplete="off" class="layui-input">
+            <input type="text" name="name" lay-verify="required" placeholder="请输入节点名" value="{{.node.Name}}" autocomplete="off" class="layui-input">
         </div>
     </div>
-	
+	 <div class="layui-form-item">
+        <label class="layui-form-label">节点标题</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" lay-verify="required" placeholder="请输入节点标题" value="{{.node.Title}}"  autocomplete="off" class="layui-input">
+        </div>
+    </div>
      <div class="layui-form-item">
         <label class="layui-form-label">状态</label>
         <div class="layui-input-block">
-            <input type="checkbox" name="status" checked value="1" lay-skin="switch" title="状态">
+            <input type="checkbox" name="status" {{if eq .node.Status 1}}checked{{end}}  value="1" lay-skin="switch" title="状态">
         </div>
     </div>
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">备注</label>
         <div class="layui-input-block">
-            <textarea placeholder="请输入内容" class="layui-textarea" name="remark">{{.role.Remark}}</textarea>
+            <textarea placeholder="请输入内容" class="layui-textarea" name="remark">{{.node.Remark}}</textarea>
+        </div>
+    </div>
+	<div class="layui-form-item">
+        <label class="layui-form-label">节点排序</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sort" lay-verify="required" placeholder="请输入节点排序" value="{{.node.Sort}}" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+	  <div class="layui-form-item">
+        <label class="layui-form-label">父节点</label>
+        <div class="layui-input-inline">
+            <select name="pid" lay-filter="pid">
+				<option value="0">根节点</option>
+				{{range $key,$value := .nodes}}
+				{{if eq $value.Id $.node.Pid}}
+                <option value="{{$value.Id}}" selected>   ├ {{$value.Title}}</option>
+				{{else}}
+				 <option value="{{$value.Id}}"> ├ {{$value.Title}}</option>
+				{{end}}
+				{{end}}
+            </select>
+        </div>
+    </div>
+	
+	<div class="layui-form-item">
+        <label class="layui-form-label">节点类型</label>
+        <div class="layui-input-block">
+            <input type="radio" name="type" value="model" title="模块"  {{if eq .node.Type "model"}}checked{{end}}>
+            <input type="radio" name="type" value="operate" title="操作"  {{if eq .node.Type "operate"}}checked{{end}}>
         </div>
     </div>
 
@@ -67,14 +102,14 @@
             });*/
 			//console.log(data.field);
 			//return false;
-			$.post("/admin/role/editpost",data.field,function(data){
+			$.post("/admin/node/editpost",data.field,function(data){
 				console.log(data);
 				if(data.code==1){
 					 layer.msg('提交成功，正在为您跳转', {
 		                icon: 16
 		                ,shade: 0.01
 		            });
-					window.location="/admin/role";
+					window.location="/admin/node";
 				}else{
 					layer.msg('修改失败，请检查你的信息！');
 				}

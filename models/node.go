@@ -13,7 +13,7 @@ type Node struct {
 	Sort     int    `排序`
 	Pid      int    `父节点ID`
 	Level    int    `级别`
-	Type     int    `类型`
+	Type     string `类型`
 	Group_id int    `分组ID`
 }
 
