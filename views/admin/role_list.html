@@ -86,7 +86,7 @@
                   pagingType: "full_numbers",  //分页样式：simple,simple_numbers,full,full_numbers
                   "columnDefs": [ {
                       "targets": 5,
-                      "defaultContent": ' <button class="layui-btn layui-btn-small view">查看</button><button class="layui-btn layui-btn-small layui-btn-normal edit">编辑</button><button class="layui-btn layui-btn-small layui-btn-danger delete">删除</button><button class="layui-btn layui-btn-small layui-btn-warm role_user">成员管理</button>'
+                      "defaultContent": ' <button class="layui-btn layui-btn-small view">查看</button><button class="layui-btn layui-btn-small layui-btn-normal edit">编辑</button><button class="layui-btn layui-btn-small layui-btn-danger delete">删除</button><button class="layui-btn layui-btn-small layui-btn-warm role_user">成员管理</button><button class="layui-btn layui-btn-small role_node">权限管理</button>'
                   } ],
                   ajax: function (data, callback, settings) {
 				
@@ -220,6 +220,10 @@
 		$('#dateTable tbody').on('click','.role_user',function(){
 			var data = dataTable.row( $(this).parents('tr') ).data();
 			window.location="/admin/role/user?id="+data.Id;
+		})
+		$('#dateTable tbody').on('click','.role_node',function(){
+			var data = dataTable.row( $(this).parents('tr') ).data();
+			window.location="/admin/role/node?id="+data.Id;
 		})
 
 

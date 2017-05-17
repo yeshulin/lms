@@ -10,7 +10,3 @@ import (
 type NewsController struct {
 	controllers.WebController
 }
-
-type NewsTypeController struct {
-	controllers.WebController
-}

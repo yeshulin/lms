@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>表单</title>
+    <link rel="stylesheet" href="/static/vipadmin/frame/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/vipadmin/css/style.css">
+    <link rel="icon" href="/static/vipadmin/image/code.png">
+</head>
+<body class="body">
+
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>
+        <span class="layui-breadcrumb">
+            <a href="/admin">首页</a>
+            <a><cite>添加分类</cite></a>
+        </span>
+    </legend>
+</fieldset>
+
+<form class="layui-form" id="user-form" >
+    <div class="layui-form-item">
+        <label class="layui-form-label">分类名</label>
+        <div class="layui-input-block">
+            <input type="text" name="catname" lay-verify="required" placeholder="请输入分类名" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+     
+	<div class="layui-form-item">
+        <label class="layui-form-label">节点排序</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sort" placeholder="请输入分类排序" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+	  <div class="layui-form-item">
+        <label class="layui-form-label">父分类</label>
+        <div class="layui-input-inline">
+            <select name="pid" lay-filter="role_id">
+				<option value="0">根分类</option>
+				{{range $key,$value:=.newstype}}
+                <option value="{{$value.Id}}">    ├ {{$value.Catname}}</option>
+				{{end}}
+            </select>
+        </div>
+    </div>
+	
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" name="submit" value="提交" lay-filter="demo1">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script src="/static/vipadmin/js/jquery.js" charset="utf-8"></script>
+<script src="/static/vipadmin/frame/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+    layui.use(['element','form'], function(){
+        var form = layui.form()
+                ,layer = layui.layer
+
+
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            /*layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            });*/
+			$.post("/admin/newstype/addpost",data.field,function(data){
+				console.log(data);
+				if(data.code==1){
+					 layer.msg('提交成功，正在为您跳转', {
+		                icon: 16
+		                ,shade: 0.01
+		            });
+					window.location="/admin/newstype";
+				}
+			},"json")
+			return false;	
+        });
+
+
+    });
+</script>
+</body>
+</html>
