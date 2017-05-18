@@ -162,7 +162,6 @@ func (this *NewsTypeController) EditPost() {
 			newstype.Catname = this.GetString("catname")
 			newstype.Sort = sort
 			newstype.Pid = pid
-			newstype.Addtime = time.Now().Unix()
 			newstype.Updatetime = time.Now().Unix()
 			id, err := o.Update(newstype)
 			if err != nil {

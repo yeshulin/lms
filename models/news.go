@@ -6,9 +6,9 @@ import (
 
 type News struct {
 	Id          int    `orm:"pk"`
-	Catid       string `分类名称`
-	Title       int    `父ID`
-	Thumb       int    `排序`
+	Catid       int    `分类名称`
+	Title       string `父ID`
+	Thumb       string `排序`
 	Keywords    string `关键词`
 	Description string `描述`
 	Content     string `内容`

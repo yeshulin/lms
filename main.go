@@ -23,5 +23,6 @@ func main() {
 		}
 	})
 	beego.AddFuncMap("ConvertT", function.ConvertT)
+	beego.SetStaticPath("/uploads", "uploads")
 	beego.Run()
 }

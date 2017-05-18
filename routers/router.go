@@ -68,4 +68,8 @@ func init() {
 	beego.Router("/admin/course", &admin.CourseController{})
 	beego.Router("/admin/coursetype", &admin.CourseTypeController{})
 	beego.Router("/admin/index/welcome", &admin.IndexController{}, "get:Welcome")
+
+	/*接口路由*/
+	beego.Router("/file/upload", &controllers.FileController{}, "post:Upload;get:Upload")
+	beego.Router("/file/uploadpage", &controllers.FileController{}, "get:UploadPage")
 }

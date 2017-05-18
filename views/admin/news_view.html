@@ -17,7 +17,7 @@
     <legend>
         <span class="layui-breadcrumb">
             <a href="/admin">首页</a>
-            <a><cite>浏览分类</cite></a>
+            <a><cite>浏览文章</cite></a>
         </span>
     </legend>
 </fieldset>
@@ -32,25 +32,57 @@
     <thead>
     <tr>
         <th>名称</th>
-        <th>{{.newstype.Catname}}</th>
+        <th>{{.news.Title}}</th>
     </tr>
     </thead>
     <tbody>
 	<tr>
-        <td>排序</td>
-        <td>{{.newstype.Sort}}</td>
+        <td>分类ID</td>
+        <td>{{.news.Catid}}</td>
     </tr>
 	<tr>
-        <td>父节点</td>
-        <td>{{.newstype.Pid}}</td>
+        <td>分类名称</td>
+        <td>{{.newstype.Catname}}</td>
+    </tr>
+	<tr>
+        <td>缩略图</td>
+        <td><img src="{{.news.Thumb}}" width="200"></td>
+    </tr>
+	<tr>
+        <td>关键词</td>
+        <td>{{.news.Keywords}}</td>
+    </tr>
+	<tr>
+        <td>描述</td>
+        <td>{{.news.Description}}</td>
+    </tr>
+	<tr>
+        <td>内容</td>
+        <td>{{.news.Content}}</td>
+    </tr>
+	<tr>
+        <td>排序</td>
+        <td>{{.news.Sort}}</td>
+    </tr>
+	<tr>
+        <td>排序</td>
+        <td>{{.news.Sort}}</td>
+    </tr>
+	<tr>
+        <td>状态</td>
+        <td>{{.news.Status}}</td>
+    </tr>
+	<tr>
+        <td>作者</td>
+        <td>{{.news.Username}}</td>
     </tr>
 	<tr>
         <td>添加时间</td>
-        <td>{{.newstype.Addtime | ConvertT}}</td>
+        <td>{{.news.Addtime | ConvertT}}</td>
     </tr>
 	 <tr>
         <td>修改时间</td>
-        <td>{{.newstype.Updatetime | ConvertT}}</td>
+        <td>{{.news.Updatetime | ConvertT}}</td>
     </tr>
 
     

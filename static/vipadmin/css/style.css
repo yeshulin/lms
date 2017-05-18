@@ -532,3 +532,8 @@ html body .layui-nav .layui-nav-bar {
         display: none;
     }
 }
+.site-demo-upload,
+.site-demo-upload img{width: 200px; height: 200px;}
+.site-demo-upload{position: relative; background: #e2e2e2;}
+.site-demo-upload .site-demo-upbar{position: absolute; top: 50%; left: 50%; margin: -18px 0 0 -56px;}
+.site-demo-upload .layui-upload-button{background-color: rgba(0,0,0,.2); color: rgba(255,255,255,1);}
