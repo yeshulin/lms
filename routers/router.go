@@ -72,4 +72,6 @@ func init() {
 	/*接口路由*/
 	beego.Router("/file/upload", &controllers.FileController{}, "post:Upload;get:Upload")
 	beego.Router("/file/uploadpage", &controllers.FileController{}, "get:UploadPage")
+	/*oss路由*/
+	beego.Router("/oss/webupload", &controllers.OssController{}, "get:WebUpload")
 }
