@@ -10,16 +10,29 @@ import (
 )
 
 var (
-	key []byte = []byte(beego.AppConfig.String("appKey"))
+	key []byte = []byte(beego.AppConfig.String("jwtkey"))
 )
 
 // 产生json web token
-func GenToken() string {
+func GenToken(id int, username string, realname string, email string, phone string) string {
 	fmt.Println(key)
-	claims := &jwt.StandardClaims{
-		NotBefore: int64(time.Now().Unix()),
-		ExpiresAt: int64(time.Now().Unix() + 14400),
-		Issuer:    "hzwy23",
+	//	claims := &jwt.StandardClaims{
+	//		NotBefore: int64(time.Now().Unix()),
+	//		ExpiresAt: int64(time.Now().Unix() + 14400),
+	//		Issuer:    "hzwy23",
+	//	}
+	now := time.Now()
+	exp := now.Add(time.Hour * 24).Unix()
+
+	iat := now.Unix()
+	claims := &jwt.MapClaims{
+		"sub":      id,
+		"iat":      iat,
+		"exp":      exp,
+		"username": username,
+		"email":    email,
+		"phone":    phone,
+		"realname": realname,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	ss, err := token.SignedString(key)

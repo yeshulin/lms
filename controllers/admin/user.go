@@ -15,7 +15,8 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	jwt "github.com/dgrijalva/jwt-go"
+	//	jwt "github.com/dgrijalva/jwt-go"
+	//	"github.com/astaxie/beego/validation"
 )
 
 type UserController struct {
@@ -23,9 +24,7 @@ type UserController struct {
 }
 
 func (this *UserController) Login() {
-	token := hjwt.GenToken()
 
-	this.Ctx.SetCookie("Authorization", token, 14400, "/")
 	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
 	this.TplName = "admin/login.html"
 }
@@ -33,37 +32,39 @@ func (this *UserController) Login() {
 func (this *UserController) Post() {
 	aesencrypt := new(aesencrypt.AesEncrypt)
 	username := this.GetString("account")
-
 	o := orm.NewOrm()
 	member := models.Members{Username: username}
-	err := o.Read(&member)
+	err := o.Read(&member, "username")
 	if err != nil {
-		beego.Error(err)
+		this.Data["json"] = map[string]interface{}{"code": "0", "message": "用户不存在!"}
 	}
-	if pass, _ := aesencrypt.Encrypt(this.GetString("password")); base64.StdEncoding.EncodeToString(pass) != member.Password {
-		beego.Error(err)
+	pass, _ := aesencrypt.Encrypt(this.GetString("password"))
+	//	fmt.Println(base64.StdEncoding.EncodeToString(pass))
+	//	fmt.Println(member.Password)
+	if base64.StdEncoding.EncodeToString(pass) != member.Password {
+		this.Data["json"] = map[string]interface{}{"code": "0", "message": "用户名密码错误!"}
+	} else {
+		token := hjwt.GenToken(member.Id, member.Username, member.Realname, member.Email, member.Phone)
+		this.Ctx.SetCookie("Authorization", token, 86400, "/")
+		//		this.Ctx.Redirect(302, "/admin")
+		this.Data["json"] = map[string]interface{}{"code": "1", "message": "success", "data": member.Username}
 	}
+	//	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	//		"sub":      member.Id,
+	//		"iat":      iat,
+	//		"exp":      exp,
+	//		"username": member.Username,
+	//		"email":    member.Email,
+	//		"phone":    member.Phone,
+	//		"realname": member.Realname,
+	//	})
 
-	now := time.Now()
-	exp := now.Add(time.Hour * 24).Unix()
-
-	iat := now.Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub":      member.Id,
-		"iat":      iat,
-		"exp":      exp,
-		"username": member.Username,
-		"email":    member.Email,
-		"phone":    member.Phone,
-		"realname": member.Realname,
-	})
-
-	tokenString, _ := token.SignedString([]byte(beego.AppConfig.String("jwtkey")))
-	//更新登录时间，用于只允许用户一台设备登录
-	/*this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "tokenString": tokenString}
-	this.ServeJSON()*/
-	fmt.Println(tokenString)
-	this.Ctx.Redirect(302, "/admin")
+	//	tokenString, _ := token.SignedString([]byte(beego.AppConfig.String("jwtkey")))
+	//	//更新登录时间，用于只允许用户一台设备登录
+	//	/*this.Data["json"] = map[string]interface{}{"code": "1", "message": "success!", "tokenString": tokenString}
+	//	this.ServeJSON()*/
+	//	fmt.Println(tokenString)
+	this.ServeJSON()
 
 }
 func (this *UserController) Reg() {
