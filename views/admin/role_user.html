@@ -13,11 +13,11 @@
 </head>
 <body class="body">
 
-<fieldset class="layui-elem-field layui-field-title">
+<a class="refresh c-24" href="javascript:refresh_iframe();"><i class="Hui-iconfont Hui-iconfont-huanyipi f-16"></i>刷新</a>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px;">
     <legend>
         <span class="layui-breadcrumb">
-            <a href="/admin">首页</a>
-            <a><cite>角色用户</cite></a>
+            <a href="/admin" target="_top">首页</a><a href="/admin/role">角色列表</a>
 			<a><cite>{{.role.Name}}</cite></a>
         </span>
     </legend>
@@ -63,6 +63,7 @@
 <script type="text/javascript" charset="utf8" src="/static/vipadmin/js/jquery.js"></script>
 <script type="text/javascript" src="/static/vipadmin/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/static/vipadmin/js/table-tool.js"></script>
+<script src="/static/vipadmin/js/extend.js" charset="utf-8"></script>
 <script type="text/javascript">
     layui.use(['element','form'], function(){
         var $ = layui.jquery,element = layui.element,layer = layui.layer;

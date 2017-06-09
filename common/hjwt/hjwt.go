@@ -14,7 +14,7 @@ var (
 )
 
 // 产生json web token
-func GenToken(id int, username string, realname string, email string, phone string) string {
+func GenToken(id int, username string, realname string, email string, phone string, role_id int, rolename string) string {
 	fmt.Println(key)
 	//	claims := &jwt.StandardClaims{
 	//		NotBefore: int64(time.Now().Unix()),
@@ -33,6 +33,8 @@ func GenToken(id int, username string, realname string, email string, phone stri
 		"email":    email,
 		"phone":    phone,
 		"realname": realname,
+		"role_id":  role_id,
+		"rolename": rolename,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	ss, err := token.SignedString(key)

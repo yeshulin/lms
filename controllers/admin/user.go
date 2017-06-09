@@ -41,13 +41,36 @@ func (this *UserController) Post() {
 	pass, _ := aesencrypt.Encrypt(this.GetString("password"))
 	//	fmt.Println(base64.StdEncoding.EncodeToString(pass))
 	//	fmt.Println(member.Password)
+
 	if base64.StdEncoding.EncodeToString(pass) != member.Password {
 		this.Data["json"] = map[string]interface{}{"code": "0", "message": "用户名密码错误!"}
+
 	} else {
-		token := hjwt.GenToken(member.Id, member.Username, member.Realname, member.Email, member.Phone)
-		this.Ctx.SetCookie("Authorization", token, 86400, "/")
-		//		this.Ctx.Redirect(302, "/admin")
-		this.Data["json"] = map[string]interface{}{"code": "1", "message": "success", "data": member.Username}
+		var roleuser RoleUser
+		qb, _ := orm.NewQueryBuilder("mysql")
+		qb.Select("a.id,a.role_id,b.name as role_name,a.user_id,b.name as rolename,c.username,c.realname").
+			From("role_member as a").
+			LeftJoin("role as b").On("a.role_id = b.id").
+			LeftJoin("members as c").On("a.user_id = c.id").
+			Where("c.id = ?").
+			OrderBy("a.id").Desc()
+
+		// 导出 SQL 语句
+		sql := qb.String()
+
+		// 执行 SQL 语句
+
+		o.Raw(sql, member.Id).QueryRow(&roleuser)
+		fmt.Println(roleuser)
+		if roleuser.Role_id < 1 {
+			this.Data["json"] = map[string]interface{}{"code": "0", "message": "用户没有权限!"}
+		} else {
+			token := hjwt.GenToken(member.Id, member.Username, member.Realname, member.Email, member.Phone, roleuser.Role_id, roleuser.Rolename)
+			this.Ctx.SetCookie("Authorization", token, 86400, "/")
+			//		this.Ctx.Redirect(302, "/admin")
+			this.Data["json"] = map[string]interface{}{"code": "1", "message": "success", "data": member.Username}
+		}
+
 	}
 	//	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 	//		"sub":      member.Id,
@@ -306,4 +329,8 @@ func (this *UserController) EditPost() {
 		}
 	}
 	this.ServeJSON()
+}
+func (this *UserController) LogOut() {
+	this.Ctx.SetCookie("Authorization", "", 86400, "/")
+	this.Ctx.Redirect(302, "/login")
 }

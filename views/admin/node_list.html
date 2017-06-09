@@ -13,10 +13,11 @@
 </head>
 <body class="body">
 
+<a class="refresh c-24" href="javascript:refresh_iframe();"><i class="Hui-iconfont Hui-iconfont-huanyipi f-16"></i>刷新</a>
 <fieldset class="layui-elem-field layui-field-title">
     <legend>
         <span class="layui-breadcrumb">
-            <a href="/admin">首页</a>
+            <a href="/admin" target="_top">首页</a>
             <a><cite>节点列表</cite></a>
         </span>
     </legend>
@@ -51,6 +52,7 @@
 <script type="text/javascript" charset="utf8" src="/static/vipadmin/js/jquery.js"></script>
 <script type="text/javascript" src="/static/vipadmin/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/static/vipadmin/js/table-tool.js"></script>
+<script type="text/javascript" src="/static/vipadmin/js/extend.js"></script>
 <script type="text/javascript">
     layui.use(['element','layer'], function(){
         var $ = layui.jquery,element = layui.element,layer = layui.layer;

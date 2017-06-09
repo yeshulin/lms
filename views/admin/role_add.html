@@ -12,10 +12,11 @@
 </head>
 <body class="body">
 
-<fieldset class="layui-elem-field layui-field-title">
+<a class="refresh c-24" href="javascript:refresh_iframe();"><i class="Hui-iconfont Hui-iconfont-huanyipi f-16"></i>刷新</a>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top:20px;">
     <legend>
         <span class="layui-breadcrumb">
-            <a href="/admin">首页</a>
+            <a href="/admin" target="_top">首页</a><a href="/admin/role">角色列表</a>
             <a><cite>添加角色</cite></a>
         </span>
     </legend>
@@ -51,6 +52,7 @@
 </form>
 
 <script src="/static/vipadmin/js/jquery.js" charset="utf-8"></script>
+<script src="/static/vipadmin/js/extend.js" charset="utf-8"></script>
 <script src="/static/vipadmin/frame/layui/layui.js" charset="utf-8"></script>
 <script type="text/javascript">
     layui.use(['element','form'], function(){
