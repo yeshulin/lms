@@ -1,25 +1,40 @@
-
-accessid= 'LTAIr9CFSL4I44et';
-accesskey= 'mFZ38Xzz3hqjQ2upcVNabFsBcZPZ97';
-host = 'http://19apps.oss-cn-shanghai.aliyuncs.com';
-
-g_dirname = ''
+accessid = ''
+accesskey = ''
+host = ''
+policyBase64 = ''
+signature = ''
+callbackbody = ''
+filename = ''
+key = ''
+expire = 0
 g_object_name = ''
 g_object_name_type = ''
 now = timestamp = Date.parse(new Date()) / 1000; 
 
-var policyText = {
-    "expiration": "2020-01-01T12:00:00.000Z", //设置该Policy的失效时间，超过这个失效时间之后，就没有办法通过这个policy上传文件了
-    "conditions": [
-    ["content-length-range", 0, 1048576000] // 设置上传文件的大小限制
-    ]
+function send_request()
+{
+    var xmlhttp = null;
+    if (window.XMLHttpRequest)
+    {
+        xmlhttp=new XMLHttpRequest();
+    }
+    else if (window.ActiveXObject)
+    {
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+  
+    if (xmlhttp!=null)
+    {
+        serverUrl = '/oss'
+        xmlhttp.open( "GET", serverUrl, false );
+        xmlhttp.send( null );
+        return xmlhttp.responseText
+    }
+    else
+    {
+        alert("Your browser does not support XMLHTTP.");
+    }
 };
-
-var policyBase64 = Base64.encode(JSON.stringify(policyText))
-message = policyBase64
-var bytes = Crypto.HMAC(Crypto.SHA1, message, accesskey, { asBytes: true }) ;
-var signature = Crypto.util.bytesToBase64(bytes);
-
 function check_object_radio() {
     var tt = document.getElementsByName('myradio');
     for (var i = 0; i < tt.length ; i++ )
@@ -32,16 +47,25 @@ function check_object_radio() {
     }
 }
 
-function get_dirname()
+function get_signature()
 {
-    dir = document.getElementById("dirname").value;
-    if (dir != '' && dir.indexOf('/') != dir.length - 1)
-    {
-        dir = dir + '/'
-    }
-    //alert(dir)
-    g_dirname = dir
-}
+    //可以判断当前expire是否超过了当前时间,如果超过了当前时间,就重新取一下.3s 做为缓冲
+    now = timestamp = Date.parse(new Date()) / 1000; 
+	if (expire < now + 3)
+	   {
+	       body = send_request()
+	       var obj = eval ("(" + body + ")");
+	       host = obj['host']
+	       policyBase64 = obj['policy']
+	       accessid = obj['accessid']
+	       signature = obj['signature']
+	       expire = parseInt(obj['expire'])
+	       callbackbody = obj['callback'] 
+	       key = obj['dir']
+	       return true;
+	   }
+    return false;
+};
 
 function random_string(len) {
 　　len = len || 32;
@@ -72,7 +96,7 @@ function calculate_object_name(filename)
     else if (g_object_name_type == 'random_name')
     {
         suffix = get_suffix(filename)
-        g_object_name = g_dirname + random_string(10) + suffix
+        g_object_name = key + random_string(10) + suffix
     }
     return ''
 }
@@ -93,7 +117,11 @@ function get_uploaded_object_name(filename)
 
 function set_upload_param(up, filename, ret)
 {
-    g_object_name = g_dirname;
+    if (ret == false)
+    {
+        ret = get_signature()
+    }
+    g_object_name = key;
     if (filename != '') {
         suffix = get_suffix(filename)
         calculate_object_name(filename)
@@ -103,8 +131,10 @@ function set_upload_param(up, filename, ret)
         'policy': policyBase64,
         'OSSAccessKeyId': accessid, 
         'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
+        'callback' : callbackbody,
         'signature': signature,
     };
+	console.log(new_multipart_params);
 
     up.setOption({
         'url': host,
@@ -122,6 +152,16 @@ var uploader = new plupload.Uploader({
 	flash_swf_url : 'lib/plupload-2.1.2/js/Moxie.swf',
 	silverlight_xap_url : 'lib/plupload-2.1.2/js/Moxie.xap',
     url : 'http://oss.aliyuncs.com',
+
+    filters: {
+        mime_types : [ //只允许上传图片和zip,rar文件
+        { title : "Image files", extensions : "jpg,gif,png,bmp" }, 
+        { title : "Zip files", extensions : "zip,rar" },
+		{ title : "Video files", extensions : "mp4,flv,avi" }
+        ],
+        max_file_size : '1000mb', //最大只能上传10mb的文件
+        prevent_duplicates : true //不允许选取重复文件
+    },
 
 	init: {
 		PostInit: function() {
@@ -142,7 +182,7 @@ var uploader = new plupload.Uploader({
 
 		BeforeUpload: function(up, file) {
             check_object_radio();
-            get_dirname();
+//			console.log(up);
             set_upload_param(up, file.name, true);
         },
 
@@ -167,7 +207,19 @@ var uploader = new plupload.Uploader({
 		},
 
 		Error: function(up, err) {
-			document.getElementById('console').appendChild(document.createTextNode("\nError xml:" + err.response));
+            if (err.code == -600) {
+                document.getElementById('console').appendChild(document.createTextNode("\n选择的文件太大了,可以根据应用情况，在upload.js 设置一下上传的最大大小"));
+            }
+            else if (err.code == -601) {
+                document.getElementById('console').appendChild(document.createTextNode("\n选择的文件后缀不对,可以根据应用情况，在upload.js进行设置可允许的上传文件类型"));
+            }
+            else if (err.code == -602) {
+                document.getElementById('console').appendChild(document.createTextNode("\n这个文件已经上传过一遍了"));
+            }
+            else 
+            {
+                document.getElementById('console').appendChild(document.createTextNode("\nError xml:" + err.response));
+            }
 		}
 	}
 });

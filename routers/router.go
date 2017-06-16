@@ -64,15 +64,25 @@ func init() {
 	beego.Router("/admin/news/edit", &admin.NewsController{}, "get:Edit")
 	beego.Router("/admin/news/editpost", &admin.NewsController{}, "post:EditPost")
 	beego.Router("/admin/menu", &admin.MenuController{})
-	beego.Router("/admin/news", &admin.NewsController{})
-	beego.Router("/admin/newstype", &admin.NewsTypeController{})
 	beego.Router("/admin/course", &admin.CourseController{})
 	beego.Router("/admin/coursetype", &admin.CourseTypeController{})
 	beego.Router("/admin/index/welcome", &admin.IndexController{}, "get:Welcome")
+	/*视频管理*/
+	beego.Router("/admin/video", &admin.VideoController{}, "get:VideoList")
+	beego.Router("/admin/video/find", &admin.VideoController{}, "get:Get")
+	beego.Router("/admin/videostype", &admin.NewsTypeController{}, "get:NewsTypeList")
+	beego.Router("/admin/videostype/find", &admin.NewsTypeController{}, "get:Get")
+	beego.Router("/admin/videostype/add", &admin.NewsTypeController{}, "get:Add")
+	beego.Router("/admin/videostype/addpost", &admin.NewsTypeController{}, "post:AddPost")
+	beego.Router("/admin/videostype/delete", &admin.NewsTypeController{}, "post:Delete")
+	beego.Router("/admin/videostype/view", &admin.NewsTypeController{}, "get:View")
+	beego.Router("/admin/videostype/edit", &admin.NewsTypeController{}, "get:Edit")
+	beego.Router("/admin/videostype/editpost", &admin.NewsTypeController{}, "post:EditPost")
 
 	/*接口路由*/
 	beego.Router("/file/upload", &controllers.FileController{}, "post:Upload;get:Upload")
 	beego.Router("/file/uploadpage", &controllers.FileController{}, "get:UploadPage")
 	/*oss路由*/
 	beego.Router("/oss/webupload", &controllers.OssController{}, "get:WebUpload")
+	beego.Router("/oss", &controllers.OssController{})
 }

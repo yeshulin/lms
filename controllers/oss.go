@@ -16,7 +16,12 @@ type OssController struct {
 }
 
 func (this *OssController) WebUpload() {
-	response := aliyun.Get_policy_token()
-	this.Data["response"] = response
 	this.TplName = "oss/webupload.html"
+}
+
+func (this *OssController) Get() {
+	response := aliyun.Get_policy_token()
+	this.Ctx.WriteString(response)
+	//	this.Data["json"] = response
+	//	this.ServeJSON()
 }
